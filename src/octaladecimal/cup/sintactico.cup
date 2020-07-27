@@ -1,0 +1,49 @@
+package octaladecimal.cup;
+import java_cup.runtime.Symbol;
+ parser code 
+{:
+
+    public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        System.out.println("Error Sintactico Recuperado");
+        System.out.println("\t \tLexema: "+ lexema);
+        System.out.println("\t \tFila: "+ fila);
+        System.out.println("\t \tColumna: "+ columna);
+
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        System.out.println("Error Sintactico Panic Mode");
+        System.out.println("\t \tLexema: "+ lexema);
+        System.out.println("\t \tFila: "+ fila);
+        System.out.println("\t \tColumna: "+ columna);
+
+    }
+
+:}
+
+
+
+action code
+{:
+private static final int CONVERTIDOR=8;
+:}
+
+
+
+
+/* Terminals (tokens returned by the scanner). */
+terminal String    OCTAL, ERROR;  
+/* Non-terminals */
+non terminal            Inicio,Octales,Octal;
+
+start with Inicio;
+Inicio::= Octales:ocs {:System.out.println("El Numero Decimal Es "+ocs);:};
+Octales::= Octales:ocs Octal:oc {:RESULT=(Integer)ocs*CONVERTIDOR+(Integer)oc;:}
+            |Octal:oc    {:RESULT=(Integer)oc;:};
+Octal::= OCTAL:oc{:RESULT=Integer.parseInt(oc);:};
